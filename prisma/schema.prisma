@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "cockroachdb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id                Int             @id @default(sequence())
+  id                Int             @id @default(autoincrement())
   email             String
   name              String
   age               Int?
@@ -33,7 +33,7 @@ model User {
 }
 
 model Post {
-  id         Int       @id @default(sequence())
+  id         Int       @id @default(autoincrement())
   title      String
   body       String
   created_at DateTime  @default(now())
@@ -45,7 +45,7 @@ model Post {
 }
 
 model Comment {
-  id         Int      @id @default(sequence())
+  id         Int      @id @default(autoincrement())
   body       String
   user_id    Int
   post_id    Int
@@ -56,14 +56,14 @@ model Comment {
 }
 
 model Photo {
-  id      Int    @id @default(sequence())
+  id      Int    @id @default(autoincrement())
   post_id Int
   url     String
   post    Post   @relation(fields: [post_id], references: [id])
 }
 
 model AiChat {
-  id           Int             @id @default(sequence())
+  id           Int             @id @default(autoincrement())
   user_id      Int
   created_at   DateTime        @default(now())
   user         User            @relation(fields: [user_id], references: [id])
@@ -71,7 +71,7 @@ model AiChat {
 }
 
 model AiChatHistory {
-  id         Int      @id @default(sequence())
+  id         Int      @id @default(autoincrement())
   ai_chat_id Int
   created_at DateTime @default(now())
   message    String
@@ -80,7 +80,7 @@ model AiChatHistory {
 }
 
 model DirectMessage {
-  id           Int      @id @default(sequence())
+  id           Int      @id @default(autoincrement())
   created_at   DateTime @default(now())
   sender_id    Int
   recipient_id Int
@@ -90,7 +90,7 @@ model DirectMessage {
 }
 
 model Exercise {
-  id            Int         @id @default(sequence())
+  id            Int         @id @default(autoincrement())
   exercise_name String
   set           Int
   rep           Int
@@ -100,7 +100,7 @@ model Exercise {
 }
 
 model PastWorkout {
-  id         Int        @id @default(sequence())
+  id         Int        @id @default(autoincrement())
   user_id    Int
   created_at DateTime   @default(now())
   exercise   Exercise[]
