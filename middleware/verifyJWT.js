@@ -1,28 +1,19 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const cookieParser = require("cookie-parser");
 
-const verifyJWT = (req, res, next) => {
-  console.log('HEADERS IN JWT', req.headers)
-  console.log('COOKIE IN JWT', req.cookies)
-  const authHeader = req.headers['authorization'];
+module.exports = (req, res, next) => {
+  try {
+    // Extract the token from the cookie
+    const token = req.cookies["accessToken"];
 
-  if (!authHeader) return res.sendStatus(401);
-
-  const token = authHeader.split(' ')[1];
-  jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET,
-    (err, decoded) => {
-      if (err) return res.sendStatus(403);
-
-
-      // console.log(req.user);
-      // console.log(req.username);
-      // console.log(decoded.username);
-
+    // Verify the token
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (err) return res.status(403).send("Invalid token.");
+      req.user = decoded;
       next();
-    }
-  )
+    });
+  } catch (error) {
+    return res.status(401).send("Unauthorized.");
+  }
 };
-
-module.exports = verifyJWT;
